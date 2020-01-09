@@ -1,0 +1,34 @@
+version: '3'
+services:
+    fluentd:
+        image: fluentd
+        build: ./fluent
+        volumes:
+            - ./fluent:/fluentd/etc
+        ports:
+            - "24224:24224"
+            - "24224:24224/udp"
+        networks:
+            - logging
+
+    elasticsearch:
+        image: elasticsearch:7.5.1
+        environment:
+            - "discovery.type=single-node"
+        expose:
+            - "9200"
+        ports:
+            - "9200:9200"
+        networks:
+        - logging
+
+    kibana:
+        image: kibana:7.5.1
+        ports:
+            - "9109:5601"
+        networks:
+            - logging
+
+networks:
+    logging:
+        driver: bridge
